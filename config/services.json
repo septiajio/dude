@@ -1,0 +1,14 @@
+[
+  {
+    "name": "nginx-service",
+    "podTemplate": {
+      "name": "nginx",
+      "image": "nginx",
+      "commands": []
+    },
+    "replicas": 1,
+    "pods": [],
+    "traffic": 0,
+    "CPUUsage": 0
+  }
+]
