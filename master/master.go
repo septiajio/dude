@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"sync"
 	"time"
@@ -14,16 +15,17 @@ import (
 )
 
 var nodes = []types.Node{
-	{Name: "node1", Address: "http://node1:9001"},
-	{Name: "node2", Address: "http://node2:9002"},
+	{Name: "node1", Address: "http://localhost:9001"},
+	{Name: "node2", Address: "http://localhost:9002"},
 }
 
-var services = make(map[string]*types.Service)
+var services = make(map[string]*types.Service) // todo: make this persistence
 var mu sync.Mutex
 
 func StartMaster() {
 	loadServices()
 	go scheduleInitialPods()
+	fmt.Println("Running master")
 	select {} // keep running
 }
 
@@ -84,6 +86,7 @@ func terminatePod(containerID string) {
 	}
 }
 
+// todo: make sure if this svc traffic & svc CPUUsage is implemented correctly
 func StartAutoScaler() {
 	go func() {
 		for {
@@ -91,10 +94,10 @@ func StartAutoScaler() {
 			mu.Lock()
 			for _, svc := range services {
 				if svc.Traffic > 50 || svc.CPUUsage > 70 {
-					fmt.Println("[AutoScaler] Scaling up", svc.Name)
+					log.Println("[AutoScaler] Scaling up", svc.Name)
 					scaleService(svc, svc.Replicas+1)
 				} else if svc.Traffic < 10 && svc.CPUUsage < 20 && svc.Replicas > 1 {
-					fmt.Println("[AutoScaler] Scaling down", svc.Name)
+					log.Println("[AutoScaler] Scaling down", svc.Name)
 					scaleService(svc, svc.Replicas-1)
 				}
 			}

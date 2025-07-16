@@ -26,3 +26,8 @@ func main() {
 		fmt.Println("Unknown role")
 	}
 }
+
+/*
+todo: add capability to add pod dinamically through node worker endpoint by json payload or read json config
+todo: replace simulateCPU using realCPU usage for each node --> required that each node is single vm/has cpu
+*/

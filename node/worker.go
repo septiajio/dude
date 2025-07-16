@@ -28,6 +28,7 @@ func RunServer(port string) {
 	http.ListenAndServe(":"+port, nil)
 }
 
+// todo: this handle not yet deploying/build/start real image or container
 func handleRun(w http.ResponseWriter, r *http.Request) {
 	var pod types.Pod
 	_ = json.NewDecoder(r.Body).Decode(&pod)
@@ -36,6 +37,7 @@ func handleRun(w http.ResponseWriter, r *http.Request) {
 	trafficMap[id] = 0
 	cpuMap[id] = 0
 	go simulateCPU(id)
+	fmt.Println("deploy simulated")
 	w.Write([]byte(id))
 }
 
